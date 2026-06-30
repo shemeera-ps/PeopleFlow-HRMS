@@ -17,4 +17,6 @@ class Messages
     public const UNAUTHORIZED = 'Unauthorized.';
     public const FORBIDDEN = 'Permission denied.';
     public const NOT_FOUND = 'Record not found.';
+
+    public const TOKEN_REFRESHED = "Authorization token refreshed successfully.";
 }
