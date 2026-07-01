@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\PermissionController;
+use App\Http\Controllers\Api\UserController;
 Route::prefix('v1/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
@@ -37,6 +38,17 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::put('/{id}/update', [PermissionController::class, 'update']);
         Route::delete('/{id}/delete', [PermissionController::class, 'destroy']);
         Route::get('{id}/permission', [PermissionController::class, 'getPermission']);
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::get('/all', [UserController::class, 'index']);
+        Route::post('/store', [UserController::class, 'store']);
+        Route::put('/{id}/update', [UserController::class, 'update']);
+        Route::delete('/{id}', [UserController::class, 'destroy']);
+        Route::get('/getuser/{id}', [UserController::class, 'show']);
+        Route::post('/assign-roles', [UserController::class, 'assignRoles']);
+        Route::get('getroles/{id}', [UserController::class, 'getAssignedRoles']);
+        Route::post('removeroles', [UserController::class, 'removeRoles']);
     });
 
 

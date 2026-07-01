@@ -11,9 +11,15 @@ class RoleService
 
     }
 
-    public function all()
+    public function all($request)
     {
-        $data = Role::where('is_active', true)->get();
+        $per_page = $request->per_page ?? 10;
+        $data = Role::where('is_active', true);
+        if ($request->has('search')) {
+            $data = $data->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('description', 'like', '%' . $request->search . '%');
+        }
+        $data = $data->orderBy('name', 'asc')->paginate($per_page);
         return ApiResponse::success("Roles retrieved successfully.", $data);
     }
 

@@ -5,9 +5,17 @@ use App\Constants\Messages;
 use App\Helpers\ApiResponse;
 class PermissionService
 {
-    public function getAllPermissions()
+    public function getAllPermissions($request)
     {
-        $permissions = Permission::where('is_active', true)->get();
+        $per_page = $request->per_page ?? 10;
+        $permissions = Permission::where('is_active', true);
+
+        if ($request->has('search')) {
+            $permissions = $permissions->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('description', 'like', '%' . $request->search . '%');
+        }
+
+        $permissions = $permissions->orderBy('name', 'asc')->paginate($per_page);
         return ApiResponse::success($permissions);
     }
 
