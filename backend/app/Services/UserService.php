@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Constants\Messages;
 use App\Helpers\ApiResponse;
@@ -9,7 +10,10 @@ class UserService
     public function getAllUsers($request)
     {
         $per_page = $request->per_page ?? 10;
-        $query = User::where('is_active', true)->query();
+        $isActive = $request->input('is_active') ?? true;
+        $query = User::where('is_active', $isActive)->query();
+        $sortBy = $request->sortBy ?? "name";
+        $sortOrder = $request->sortOrder ?? "asc";
 
         // Apply filters based on request parameters
         if ($request->has('name')) {
@@ -23,9 +27,14 @@ class UserService
         if ($request->has('email')) {
             $query->where('email', 'like', '%' . $request->input('email') . '%');
         }
+        if ($request->has('role_id')) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('roles.id', $request->input('role_id'));
+            });
+        }
 
         // Paginate the results
-        $users = $query->orderBy('name', 'asc')->paginate($per_page);
+        $users = $query->orderBy($sortBy, $sortOrder)->paginate($per_page);
         return ApiResponse::success("Users retrieved successfully.", $users);
     }
 
@@ -37,7 +46,7 @@ class UserService
             'is_active' => true,
         ]);
 
-        return ApiResponse::success("User created successfully.", $user);
+        return ApiResponse::success("User created successfully.", new UserResource($user));
     }
     public function updateUser(array $data, $id)
     {
@@ -46,7 +55,7 @@ class UserService
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }
         $user->update($data + ['password' => bcrypt($data['password'])]);
-        return ApiResponse::success("User updated successfully.", $user);
+        return ApiResponse::success("User updated successfully.", new UserResource($user));
     }
     public function deleteUser(int $id)
     {
@@ -55,7 +64,7 @@ class UserService
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }
         $user->update(['is_active' => false]);
-        return ApiResponse::success('User Deactivated successfully', $user);
+        return ApiResponse::success('User Deactivated successfully', new UserResource($user));
     }
     public function getUserById($id)
     {
@@ -65,7 +74,7 @@ class UserService
         }
 
 
-        return ApiResponse::success("User retrieved successfully.", $user);
+        return ApiResponse::success("User retrieved successfully.", new UserResource($user));
     }
 
     public function assignRolesToUser(array $data)
@@ -75,7 +84,7 @@ class UserService
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }
         $user->roles()->sync($data["role_ids"]);
-        return ApiResponse::success("Roles assigned to user successfully.", $user);
+        return ApiResponse::success("Roles assigned to user successfully.", new UserResource($user));
     }
 
     public function getAssignedRoles($id)
@@ -85,7 +94,7 @@ class UserService
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }
         $roles = $user->roles()->get();
-        return ApiResponse::success("Roles retrieved successfully.", $roles);
+        return ApiResponse::success("Roles retrieved successfully.", new UserResource($user));
     }
     public function removeRolesFromUser(array $data)
     {
@@ -94,6 +103,6 @@ class UserService
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }
         $user->roles()->detach($data["role_ids"]);
-        return ApiResponse::success("Roles removed from user successfully.", $user);
+        return ApiResponse::success("Roles removed from user successfully.", new UserResource($user));
     }
 }

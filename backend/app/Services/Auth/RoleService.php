@@ -14,12 +14,14 @@ class RoleService
     public function all($request)
     {
         $per_page = $request->per_page ?? 10;
+        $sortBy = $request->sortBy ?? "name";
+        $sortOrder = $request->sortOrder ?? "asc";
         $data = Role::where('is_active', true);
         if ($request->has('search')) {
             $data = $data->where('name', 'like', '%' . $request->search . '%')
                 ->orWhere('description', 'like', '%' . $request->search . '%');
         }
-        $data = $data->orderBy('name', 'asc')->paginate($per_page);
+        $data = $data->orderBy($sortBy, $sortOrder)->paginate($per_page);
         return ApiResponse::success("Roles retrieved successfully.", $data);
     }
 

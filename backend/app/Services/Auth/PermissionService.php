@@ -8,6 +8,8 @@ class PermissionService
     public function getAllPermissions($request)
     {
         $per_page = $request->per_page ?? 10;
+        $sortBy = $request->sortBy ?? "name";
+        $sortOrder = $request->sortOrder ?? "asc";
         $permissions = Permission::where('is_active', true);
 
         if ($request->has('search')) {
@@ -15,7 +17,7 @@ class PermissionService
                 ->orWhere('description', 'like', '%' . $request->search . '%');
         }
 
-        $permissions = $permissions->orderBy('name', 'asc')->paginate($per_page);
+        $permissions = $permissions->orderBy($sortBy, $sortOrder)->paginate($per_page);
         return ApiResponse::success($permissions);
     }
 
