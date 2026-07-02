@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\DepartmentController;
 Route::prefix('v1/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
@@ -49,6 +50,15 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::post('/assign-roles', [UserController::class, 'assignRoles']);
         Route::get('getroles/{id}', [UserController::class, 'getAssignedRoles']);
         Route::post('removeroles', [UserController::class, 'removeRoles']);
+    });
+
+    Route::prefix('departments')->group(function () {
+        Route::get('/all', [DepartmentController::class, 'index']);
+        Route::post('/store', [DepartmentController::class, 'store']);
+        Route::put('/{id}/update', [DepartmentController::class, 'update']);
+        Route::delete('delete/{id}', [DepartmentController::class, 'destroy']);
+        Route::get('/getdepartment/{id}', [DepartmentController::class, 'show']);
+
     });
 
 
