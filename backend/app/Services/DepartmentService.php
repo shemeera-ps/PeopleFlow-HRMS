@@ -10,10 +10,10 @@ class DepartmentService
 {
     public function all($request)
     {
-        $perPage = $request->perPage ?? 10;
+        $perPage = $request->per_page ?? 10;
         $search = $request->search ?? '';
-        $sortBy = $request->sortBy ?? 'name';
-        $sortOrder = $request->sortOrder ?? 'asc';
+        $sortBy = $request->sort_by ?? 'name';
+        $sortOrder = $request->sort_order ?? 'asc';
 
         $data = Department::where('is_active', true)
             ->where(function ($query) use ($search) {

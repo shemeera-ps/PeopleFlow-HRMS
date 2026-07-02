@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-class Department extends Model
+
+class Designation extends Model
 {
-    use SoftDeletes;
-    protected $table = "departments";
+    protected $table = "designations";
     protected $fillable = [
         "name",
         "code",
         "description",
+        "department_id",
         "is_active",
         "created_by",
         "updated_by",
@@ -25,13 +25,15 @@ class Department extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 
-    public function designations()
+    public function user()
     {
-        return $this->hasMany(Designation::class, 'department_id');
+        return $this->hasMany(User::class, 'designation_id');
     }
-    public function users()
-    {
-        return $this->hasMany(User::class, 'department_id');
-    }
+
+
 }

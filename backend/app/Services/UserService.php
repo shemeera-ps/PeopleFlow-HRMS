@@ -11,9 +11,9 @@ class UserService
     {
         $per_page = $request->per_page ?? 10;
         $isActive = $request->input('is_active') ?? true;
-        $query = User::where('is_active', $isActive)->query();
-        $sortBy = $request->sortBy ?? "name";
-        $sortOrder = $request->sortOrder ?? "asc";
+        $query = User::where('is_active', $isActive);
+        $sortBy = $request->sort_by ?? "name";
+        $sortOrder = $request->sort_order ?? "asc";
 
         // Apply filters based on request parameters
         if ($request->has('name')) {

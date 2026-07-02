@@ -36,6 +36,7 @@ class UpdateUserRequest extends FormRequest
                     ->symbols()
             ],
             'department_id' => 'nullable|exists:departments,id',
+            'designation_id' => 'nullable|exists:designations,id',
         ];
     }
 }
