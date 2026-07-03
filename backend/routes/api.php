@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\DesignationController;
+use App\Http\Controllers\Api\EmploymentTypeController;
+use App\Http\Controllers\Api\BranchController;
 Route::prefix('v1/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 });
@@ -68,6 +70,22 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::put('/{id}/update', [DesignationController::class, 'update']);
         Route::delete('delete/{id}', [DesignationController::class, 'destroy']);
         Route::get('/getdesignation/{id}', [DesignationController::class, 'show']);
+
+    });
+
+    Route::prefix('employmenttype')->group(function () {
+        Route::get('/all', [EmploymentTypeController::class, 'index']);
+        Route::post('/store', [EmploymentTypeController::class, 'store']);
+        Route::put('/{id}/update', [EmploymentTypeController::class, 'update']);
+        Route::delete('delete/{id}', [EmploymentTypeController::class, 'destroy']);
+    });
+
+    Route::prefix('branches')->group(function () {
+        Route::get('/all', [BranchController::class, 'index']);
+        Route::post('/store', [BranchController::class, 'store']);
+        Route::put('/{id}/update', [BranchController::class, 'update']);
+        Route::delete('delete/{id}', [BranchController::class, 'destroy']);
+        Route::get('/getbranch/{id}', [BranchController::class, 'show']);
 
     });
 

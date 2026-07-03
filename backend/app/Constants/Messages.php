@@ -11,6 +11,9 @@ class Messages
     public const UPDATED = 'Record updated successfully.';
     public const DELETED = 'Record deleted successfully.';
 
+    public const LISTED = 'Records fetched successfully.';
+    public const FETCHED = 'Record fetched successfully.';
+
     // Errors
     public const INVALID_CREDENTIALS = 'Invalid username or password.';
     public const ACCOUNT_DISABLED = 'Your account has been disabled.';
@@ -19,6 +22,8 @@ class Messages
     public const NOT_FOUND = 'Record not found.';
 
     public const TOKEN_REFRESHED = "Authorization token refreshed successfully.";
+
+
 
 
 }
