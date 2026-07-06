@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ShiftApiController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoleController;
@@ -49,7 +50,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::post('/store', [UserController::class, 'store']);
         Route::put('/{id}/update', [UserController::class, 'update']);
         Route::delete('/delete/{id}', [UserController::class, 'destroy']);
-        Route::get('/getuser/{id}', [UserController::class, 'show']);
+        Route::get('/users/{id}', [UserController::class, 'show']);
         Route::post('/assign-roles', [UserController::class, 'assignRoles']);
         Route::get('getroles/{id}', [UserController::class, 'getAssignedRoles']);
         Route::post('removeroles', [UserController::class, 'removeRoles']);
@@ -85,9 +86,18 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::post('/store', [BranchController::class, 'store']);
         Route::put('/{id}/update', [BranchController::class, 'update']);
         Route::delete('delete/{id}', [BranchController::class, 'destroy']);
-        Route::get('/getbranch/{id}', [BranchController::class, 'show']);
+        Route::get('/{id}', [BranchController::class, 'show']);
 
     });
+
+    Route::prefix('shifts')->group(function () {
+        Route::get('/all', [ShiftApiController::class, 'index']);
+        Route::post('/store', [ShiftApiController::class, 'store']);
+        Route::put('/{id}/update', [ShiftApiController::class, 'update']);
+        Route::delete('delete/{id}', [ShiftApiController::class, 'destroy']);
+        Route::get('/{id}', [ShiftApiController::class, 'show']);
+    });
+
 
 
 });

@@ -68,7 +68,7 @@ class UserService
     }
     public function getUserById($id)
     {
-        $user = User::with('roles')->find($id);
+        $user = User::with('roles', 'roles.permissions', 'departments', 'designations', 'employmentTypes')->find($id);
         if (!$user) {
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }
