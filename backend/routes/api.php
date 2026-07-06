@@ -54,6 +54,8 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::post('/assign-roles', [UserController::class, 'assignRoles']);
         Route::get('getroles/{id}', [UserController::class, 'getAssignedRoles']);
         Route::post('removeroles', [UserController::class, 'removeRoles']);
+
+        Route::put('/{id}/organization', [UserController::class, 'updateOrganizationDetails']);
     });
 
     Route::prefix('departments')->group(function () {
@@ -71,6 +73,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::put('/{id}/update', [DesignationController::class, 'update']);
         Route::delete('delete/{id}', [DesignationController::class, 'destroy']);
         Route::get('/getdesignation/{id}', [DesignationController::class, 'show']);
+        Route::get('/departments/{id}', [DesignationController::class, 'designationsUnderDepartment']);
 
     });
 

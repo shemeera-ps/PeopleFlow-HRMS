@@ -32,4 +32,8 @@ class DesignationController extends Controller
     {
         return $this->designationService->show($id);
     }
+    public function designationsUnderDepartment($departmentId)
+    {
+        return $this->designationService->getDesignationsByDepartment($departmentId);
+    }
 }

@@ -57,4 +57,9 @@ class DesignationService
         }
         return ApiResponse::success('Designation fetched successfully', new DesignationResource($designation));
     }
+    public function getDesignationsByDepartment($departmentId)
+    {
+        $designations = Designation::where('department_id', $departmentId)->where('is_active', true)->get();
+        return ApiResponse::success(Messages::LISTED, $designations);
+    }
 }

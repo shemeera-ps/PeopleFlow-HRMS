@@ -105,4 +105,13 @@ class UserService
         $user->roles()->detach($data["role_ids"]);
         return ApiResponse::success("Roles removed from user successfully.", new UserResource($user));
     }
+    public function updateOrganizationDetails(array $data, $id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return ApiResponse::error(Messages::NOT_FOUND, null, 404);
+        }
+        $user->update($data);
+        return ApiResponse::success("User organization details updated successfully.", new UserResource($user));
+    }
 }

@@ -25,6 +25,12 @@ class User extends Authenticatable implements JWTSubject
         'last_login_at',
         'is_active',
         'profile_picture',
+        'department_id',
+        'designation_id',
+        'employment_type_id',
+        'branch_id',
+        'shift_id',
+        'manager_id',
     ];
 
     /**
@@ -78,6 +84,15 @@ class User extends Authenticatable implements JWTSubject
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+    public function subordinates()
+    {
+        return $this->hasMany(User::class, 'manager_id');
     }
 
 }
