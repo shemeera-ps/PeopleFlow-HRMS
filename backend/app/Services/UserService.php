@@ -4,6 +4,8 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Constants\Messages;
 use App\Helpers\ApiResponse;
+use App\Http\Resources\EmployeeProfileResource;
+use App\Models\EmployeeProfile;
 
 class UserService
 {
@@ -113,5 +115,30 @@ class UserService
         }
         $user->update($data);
         return ApiResponse::success("User organization details updated successfully.", new UserResource($user));
+    }
+
+    public function updateEmployeeProfile(array $data, $id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return ApiResponse::error(Messages::NOT_FOUND, null, 404);
+        }
+
+        $profile = EmployeeProfile::firstOrNew([
+            'user_id' => $user->id
+        ]);
+
+        if (!$profile->exists) {
+            $profile->created_by = auth()->id();
+        }
+
+        $profile->fill($data);
+        $profile->updated_by = auth()->id();
+        $profile->save();
+
+        return ApiResponse::success(
+            "User employee profile updated successfully.",
+            new EmployeeProfileResource($profile->load('user'))
+        );
     }
 }

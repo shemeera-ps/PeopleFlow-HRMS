@@ -8,6 +8,7 @@ use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Requests\User\AssignRoleRequest;
 use App\Http\Requests\User\RemoveRoleRequest;
 use App\Http\Requests\User\UpdateOrganizationDetailsRequest;
+use App\Http\Requests\User\UpdateEmployeeProfileRequest;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 class UserController extends Controller
@@ -57,5 +58,9 @@ class UserController extends Controller
     public function updateOrganizationDetails(UpdateOrganizationDetailsRequest $request, $id)
     {
         return $this->userService->updateOrganizationDetails($request->validated(), $id);
+    }
+    public function updateProfile(UpdateEmployeeProfileRequest $request, $id)
+    {
+        return $this->userService->updateEmployeeProfile($request->validated(), $id);
     }
 }

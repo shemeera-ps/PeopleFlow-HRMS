@@ -94,5 +94,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(User::class, 'manager_id');
     }
+    public function profile()
+    {
+        return $this->hasOne(EmployeeProfile::class);
+    }
 
 }

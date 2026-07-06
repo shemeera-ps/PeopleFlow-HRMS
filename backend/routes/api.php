@@ -56,6 +56,8 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::post('removeroles', [UserController::class, 'removeRoles']);
 
         Route::put('/{id}/organization', [UserController::class, 'updateOrganizationDetails']);
+
+        Route::put("/{id}/profile", [UserController::class, 'updateProfile']);
     });
 
     Route::prefix('departments')->group(function () {
