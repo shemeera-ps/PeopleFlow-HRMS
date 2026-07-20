@@ -1,5 +1,5 @@
 # Ignore draft documentation files
 /docs/draft/
-
+/frontend/env
 # Ignore the JWT authentication implementation document
 /docs/JWT_Authentication_Implimentation.md

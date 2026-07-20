@@ -1,0 +1,70 @@
+For authentication i created
+users table
+id,name,email,employee_code(unique string like EMP10001),email_verified_at,password,
+remember_token,timestamps,profile_picture,softdeletes,is_active,last_login_at
+roles table
+colums:id,name,description,created_at,updated_at,created_by,is_active
+
+permissions
+id,name,description,created_at,updated_at,created_by,is_active
+
+roles_permissions
+id,role_id,permission_id,created_at,updated_at
+
+roles_user
+id,role_id,user_id,created_at,updated_at
+
+## Git notes
+
+Step 1: Make sure everything is committed
+
+On feature/authentication:
+
+git status
+Step 2: Push the latest changes
+git push origin feature/authentication
+Step 3: Switch to develop
+git checkout develop
+Step 4: Pull the latest develop
+
+Even if you're working alone, this is a good habit.
+
+git pull origin develop
+Step 5: Merge the feature branch
+git merge feature/authentication
+Step 6: Push develop
+git push origin develop
+
+Now GitHub will have:
+
+develop
+Authentication ✔
+Roles ✔
+Permissions ✔
+Users ✔
+Step 7: Create a new feature branch
+
+Never continue working on the old feature branch.
+
+Create a fresh one:
+
+git checkout -b feature/department-management
+
+Then push it:
+
+git push -u origin feature/department-management
+Should we delete the old feature branch?
+
+Yes.
+
+Once it's merged into develop:
+
+Delete locally:
+
+git branch -d feature/authentication
+
+Delete remotely:
+
+git push origin --delete feature/authentication
+
+This keeps the repository clean.
