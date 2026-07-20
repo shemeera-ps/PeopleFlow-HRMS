@@ -15,7 +15,11 @@ function AppRoutes() {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/change-password" element={<ChangePassword />} />
+
+          <Route
+            path="/settings/change-password"
+            element={<ChangePassword />}
+          />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

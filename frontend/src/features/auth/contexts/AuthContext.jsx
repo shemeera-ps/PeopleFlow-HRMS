@@ -5,7 +5,12 @@ import {
   useEffect,
   useReducer,
 } from "react";
-import { login as loginApi, logout as logoutApi, me } from "../api/authApi";
+import {
+  changePassword as changePasswordApi,
+  login as loginApi,
+  logout as logoutApi,
+  me,
+} from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 const AuthContext = createContext();
 
@@ -148,9 +153,24 @@ function AuthContextProvider({ children }) {
       dispatch({ type: "loading/finish" });
     }
   }
+  async function changePassword(data) {
+    const response = await changePasswordApi(data);
+    if (response.success) {
+      return { success: true, message: "Password updated successfully" };
+    }
+    return { success: false, message: "An error occured" };
+  }
   return (
     <AuthContext.Provider
-      value={{ user, token, login, isAuthenticated, logout, isLoading }}
+      value={{
+        user,
+        token,
+        login,
+        isAuthenticated,
+        logout,
+        isLoading,
+        changePassword,
+      }}
     >
       {children}
     </AuthContext.Provider>

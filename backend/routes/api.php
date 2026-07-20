@@ -23,7 +23,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
 
         Route::post('/logout', [AuthController::class, 'logout']);
-        Route::post('/change-password', [AuthController::class, 'changePassword']);
+        Route::put('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/refresh', [AuthController::class, 'refreshToken']);
     });
 
