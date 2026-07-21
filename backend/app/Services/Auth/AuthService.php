@@ -164,6 +164,9 @@ class AuthService
         return ApiResponse::success(
             'Token refreshed successfully.',
             [
+                'user' => new UserResource($user),
+                'roles' => $user->getRoles(),
+                'permissions' => $user->getPermissions(),
                 'token' => $accessToken,
             ]
         )->cookie(

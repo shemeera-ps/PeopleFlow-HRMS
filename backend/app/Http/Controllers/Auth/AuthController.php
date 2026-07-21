@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 
 use App\Helpers\ApiResponse;
@@ -56,8 +57,13 @@ class AuthController extends Controller
         if (!$this->authenticateRequest($request)) {
             return ApiResponse::error('Unauthenticated.', null, 401);
         }
-
-        return ApiResponse::success('User fetched successfully.', auth('api')->user());
+        $user = auth('api')->user();
+        $data = [
+            'user' => new UserResource($user),
+            'roles' => $user->getRoles(),
+            'permissions' => $user->getPermissions(),
+        ];
+        return ApiResponse::success('User fetched successfully.', $data);
     }
 
     private function authenticateRequest(Request $request): bool
