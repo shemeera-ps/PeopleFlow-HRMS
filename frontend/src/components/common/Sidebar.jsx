@@ -6,7 +6,22 @@ export default function Sidebar({ isCollapsed = false, toggleSidebar }) {
 
   const navItems = [
     { name: "Dashboard", icon: "📊", to: "/dashboard" },
-    { name: "Employees", icon: "👥", to: "/employees" },
+
+    {
+      name: "Employees",
+      icon: "👥",
+      to: "/employees",
+      children: [
+        {
+          name: "All",
+          to: "/employees/list",
+        },
+        {
+          name: "New",
+          to: "/employees/new",
+        },
+      ],
+    },
     { name: "Attendance", icon: "📅", to: "/attendance" },
     {
       name: "Leave Requests",

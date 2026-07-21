@@ -17,6 +17,7 @@ const AuthContext = createContext();
 const initialState = {
   token: localStorage.getItem("auth_token") ?? "",
   user: getAuthUser(),
+  authUserRole: "",
   isLoading: false,
   isAuthenticated: false,
 };
@@ -33,6 +34,7 @@ function reducer(state, action) {
         ...state,
         user: action.payload.user,
         token: action.payload.token,
+        authUserRole: action.payload.authUserRole,
         isAuthenticated: true,
       };
     }
@@ -61,13 +63,14 @@ function AuthContextProvider({ children }) {
       const response = await loginApi(credentials);
 
       if (response.success) {
-        // setToken(response.data.token);
-        // setUser(response.data.user);
-        // localStorage.setItem("auth_token", response.data.token);
-        // localStorage.setItem("auth_user", JSON.stringify(response.data.user));
+        console.log("User data", response.data.user);
         dispatch({
           type: "setAuth",
-          payload: { user: response.data.user, token: response.data.token },
+          payload: {
+            user: response.data.user,
+            token: response.data.token,
+            authUserRole: response.data.roles,
+          },
         });
 
         return {
@@ -130,16 +133,12 @@ function AuthContextProvider({ children }) {
       const response = await me();
 
       if (response.success) {
-        // setToken(storedToken);
-        // setUser(response.data);
-
-        // // Optional: Update cached user in localStorage
-        // localStorage.setItem("auth_user", response.user);
         dispatch({
           type: "setAuth",
           payload: {
-            user: response.user,
+            user: response.data.user,
             token: storedToken,
+            authUserRole: response.data.roles,
           },
         });
       } else {

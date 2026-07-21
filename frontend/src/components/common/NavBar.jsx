@@ -22,7 +22,7 @@ export default function NavBar() {
 
   return (
     <>
-      <header className="absolute top-0 left-0 w-screen p-4 bg-slate-800 text-slate-100 flex justify-between items-center z-50">
+      <header className="fixed top-0 left-0 w-screen p-4 bg-slate-800 text-slate-100 flex justify-between items-center z-50">
         <h3 className="font-bold text-xl">PeopleFlow HRMS</h3>
 
         {/* Profile Container */}
