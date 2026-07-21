@@ -1,4 +1,4 @@
-import api from "../../../api/axios";
+import { api, refreshApi } from "../../../api/axios";
 
 export const login = async (credentials) => {
     try {
@@ -22,8 +22,18 @@ export const logout=async()=>{
     return response.data;
 }
 export const refreshToken = async () => {
-    const response = await api.post("/auth/refresh");
-    return response.data;
+    try {
+        const response = await refreshApi.post("/auth/refresh");
+
+        return response.data;
+    } catch (error) {
+        return {
+            success: false,
+            message:
+                error?.response?.data?.message ||
+                "Session expired. Please log in again",
+        };
+    }
 };
 
 export const changePassword = async (data) => {

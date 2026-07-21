@@ -98,5 +98,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(EmployeeProfile::class);
     }
+    public function refreshTokens()
+    {
+        return $this->hasMany(RefreshToken::class);
+    }
 
 }

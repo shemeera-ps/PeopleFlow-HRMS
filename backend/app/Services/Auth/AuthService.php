@@ -3,16 +3,21 @@ namespace App\Services\Auth;
 use App\Constants\Messages;
 use App\Helpers\ApiResponse;
 use App\Http\Resources\UserResource;
+use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Illuminate\Http\Request;
 class AuthService
 {
-    public function login(array $credentials)
+    public function login(array $credentials, Request $request)
     {
+        Log::info('credentials', ['credentials' => $credentials]);
+        Log::info('request', ['request' => $request]);
         $user = $this->findUser($credentials['username']);
+        Log::info('user', ['user' => $user]);
         if (!$user) {
             return ApiResponse::error(Messages::INVALID_CREDENTIALS, null, 401);
         }
@@ -22,6 +27,22 @@ class AuthService
         }
 
         $token = JWTAuth::fromUser($user);
+        RefreshToken::where('user_id', $user->id)
+            ->where(function ($query) {
+                $query->where('revoked', true)
+                    ->orWhere('expires_at', '<', now());
+            })
+            ->delete();
+
+        $refreshToken = Str::random(64);
+        RefreshToken::create([
+            'user_id' => $user->id,
+            'token_hash' => hash('sha256', $refreshToken),
+            'ip_address' => $request->ip(),
+            'user_agent' => request()->userAgent(),
+            'expires_at' => now()->addDays(30),
+            'last_used_at' => now()
+        ]);
         $user->update(['last_login_at' => now()]);
 
         return ApiResponse::success(
@@ -32,7 +53,17 @@ class AuthService
                 'permissions' => $user->getPermissions(),
                 'token' => $token,
             ]
-        );
+        )->cookie(
+                'refresh_token',
+                $refreshToken,
+                60 * 24 * 30,   // 30 days
+                '/',
+                null,
+                app()->environment('production'),
+                true,           // HttpOnly
+                false,
+                'Strict'
+            );
 
     }
 
@@ -59,16 +90,93 @@ class AuthService
             JWTAuth::setToken($token);
         }
         JWTAuth::invalidate(JWTAuth::getToken());
+        $refreshToken = $request->cookie('refresh_token');
+
+        if ($refreshToken) {
+            $tokenHash = hash('sha256', $refreshToken);
+
+            RefreshToken::where('token_hash', $tokenHash)
+                ->update([
+                    'revoked' => true,
+                ]);
+        }
         return ApiResponse::success(Messages::LOGOUT_SUCCESS);
     }
-    public function refreshToken($request = null)
+    public function refreshToken(Request $request)
     {
-        $token = $this->resolveToken($request);
-        if ($token) {
-            JWTAuth::setToken($token);
+        $refreshToken = $request->cookie('refresh_token');
+
+        if (!$refreshToken) {
+            Log::error('Refresh token not found');
+            return ApiResponse::error(
+                'Unauthenticated.',
+                null,
+                401
+            );
         }
-        $newToken = JWTAuth::refresh(JWTAuth::getToken());
-        return ApiResponse::success(Messages::TOKEN_REFRESHED, ['token' => $newToken]);
+        $tokenHash = hash('sha256', $refreshToken);
+        $storedToken = RefreshToken::where(
+            'token_hash',
+            $tokenHash
+        )->first();
+        if (!$storedToken) {
+            Log::error('Invalid refresh token');
+            return ApiResponse::error(
+                'Unauthenticated.',
+                null,
+                401
+            );
+        }
+        if ($storedToken->revoked) {
+            Log::error('Refresh token has been revoked.');
+            return ApiResponse::error(
+                'Unauthenticated.',
+                null,
+                401
+            );
+        }
+        if ($storedToken->expires_at->isPast()) {
+            Log::error('Refresh token has been revoked.');
+            return ApiResponse::error(
+                'Unauthenticated.',
+                null,
+                401
+            );
+        }
+        $user = $storedToken->user;
+
+        if (!$user) {
+            return ApiResponse::error(
+                'User not found.',
+                null,
+                401
+            );
+        }
+        $accessToken = JWTAuth::fromUser($user);
+        $newRefreshToken = Str::random(64);
+        $storedToken->update([
+            'token_hash' => hash('sha256', $newRefreshToken),
+            'expires_at' => now()->addDays(30),
+            'last_used_at' => now(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+        return ApiResponse::success(
+            'Token refreshed successfully.',
+            [
+                'token' => $accessToken,
+            ]
+        )->cookie(
+                'refresh_token',
+                $newRefreshToken,
+                60 * 24 * 30,
+                '/',
+                null,
+                app()->environment('production'),
+                true,
+                false,
+                'Strict'
+            );
     }
 
     public function changePassword(array $data, $request = null)
