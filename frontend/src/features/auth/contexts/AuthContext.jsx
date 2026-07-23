@@ -18,7 +18,7 @@ const initialState = {
   token: localStorage.getItem("auth_token") ?? "",
   user: getAuthUser(),
   authUserRole: "",
-  isLoading: false,
+  isLoading: true,
   isAuthenticated: false,
 };
 function reducer(state, action) {
@@ -43,12 +43,14 @@ function reducer(state, action) {
       localStorage.removeItem("auth_user");
       return { ...state, user: null, token: "", isAuthenticated: false };
     }
+    default:
+      return state;
   }
 }
 
 function getAuthUser() {
   const storedUser = localStorage.getItem("auth_user");
-  return storedUser ? JSON.stringify(storedUser) : null;
+  return storedUser ? JSON.parse(storedUser) : null;
 }
 
 function AuthContextProvider({ children }) {

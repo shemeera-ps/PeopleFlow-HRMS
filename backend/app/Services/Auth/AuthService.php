@@ -12,6 +12,7 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Request;
 class AuthService
 {
+
     public function login(array $credentials, Request $request)
     {
         Log::info('credentials', ['credentials' => $credentials]);
@@ -62,7 +63,7 @@ class AuthService
                 app()->environment('production'),
                 true,           // HttpOnly
                 false,
-                'Strict'
+                'Lax'
             );
 
     }
@@ -105,6 +106,7 @@ class AuthService
     public function refreshToken(Request $request)
     {
         $refreshToken = $request->cookie('refresh_token');
+        Log::info('refresh_token' . $refreshToken);
 
         if (!$refreshToken) {
             Log::error('Refresh token not found');
@@ -127,6 +129,7 @@ class AuthService
                 401
             );
         }
+        Log::info('stored_token', ['token' => $storedToken]);
         if ($storedToken->revoked) {
             Log::error('Refresh token has been revoked.');
             return ApiResponse::error(
@@ -144,6 +147,7 @@ class AuthService
             );
         }
         $user = $storedToken->user;
+        Log::info('user', ['user' => $user]);
 
         if (!$user) {
             return ApiResponse::error(
@@ -178,7 +182,7 @@ class AuthService
                 app()->environment('production'),
                 true,
                 false,
-                'Strict'
+                'Lax'
             );
     }
 

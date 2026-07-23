@@ -10,12 +10,13 @@ use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\EmploymentTypeController;
 use App\Http\Controllers\Api\BranchController;
+
+
 Route::prefix('v1/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+    Route::post('refresh', [AuthController::class, 'refreshToken'])->withoutMiddleware('auth');
 });
-
-
-
 
 Route::middleware('auth:api')->prefix('v1')->group(function () {
 
@@ -24,7 +25,6 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
 
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::put('/change-password', [AuthController::class, 'changePassword']);
-        Route::post('/refresh', [AuthController::class, 'refreshToken']);
     });
 
     Route::prefix('roles')->group(function () {
