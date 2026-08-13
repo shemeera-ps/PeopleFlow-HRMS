@@ -21,6 +21,7 @@ class DepartmentService
                     ->orWhere('code', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
             })
+            ->withCount(['designations', 'users'])
             ->orderBy($sortBy, $sortOrder)
             ->paginate($perPage);
         return ApiResponse::success('Departments fetched successfully', $data);
@@ -52,7 +53,7 @@ class DepartmentService
     }
     public function show(int $id)
     {
-        $department = Department::find($id);
+        $department = Department::where('id', $id)->withCount(['designations', 'users'])->first();
         if (!$department) {
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }

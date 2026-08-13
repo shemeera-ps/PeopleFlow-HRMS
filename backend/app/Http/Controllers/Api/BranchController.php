@@ -14,9 +14,13 @@ class BranchController extends Controller
     public function __construct(protected BranchService $branchService)
     {
     }
+    public function all()
+    {
+        return $this->branchService->all();
+    }
     public function index(Request $request)
     {
-        return $this->branchService->all($request);
+        return $this->branchService->index($request);
 
     }
     public function store(StoreBranchRequest $request)

@@ -22,6 +22,27 @@ export default function Sidebar({ isCollapsed = false, toggleSidebar }) {
         },
       ],
     },
+    {
+      name: "Departments",
+      icon: "🏢",
+      to: "/departments",
+      children: [
+        {
+          name: "All",
+          to: "/departments/list",
+        },
+      ],
+    },
+    {
+      name: "Branches",
+      icon: "🏬",
+      to: "/branches/list",
+    },
+    {
+      name: "Shifts",
+      icon: "⏰",
+      to: "/shifts/list",
+    },
     { name: "Attendance", icon: "📅", to: "/attendance" },
     {
       name: "Leave Requests",

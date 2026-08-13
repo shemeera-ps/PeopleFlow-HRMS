@@ -56,7 +56,7 @@ class UserService
         if (!$user) {
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }
-        $user->update($data + ['password' => bcrypt($data['password'])]);
+        $user->update($data);
         return ApiResponse::success("User updated successfully.", new UserResource($user));
     }
     public function deleteUser(int $id)
@@ -70,7 +70,7 @@ class UserService
     }
     public function getUserById($id)
     {
-        $user = User::with('roles', 'roles.permissions', 'departments', 'designations', 'employmentTypes')->find($id);
+        $user = User::with('roles', 'roles.permissions', 'department', 'designation', 'employmentType')->find($id);
         if (!$user) {
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }

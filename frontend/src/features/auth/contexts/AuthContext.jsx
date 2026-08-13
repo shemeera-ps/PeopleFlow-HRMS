@@ -17,7 +17,7 @@ const AuthContext = createContext();
 const initialState = {
   token: localStorage.getItem("auth_token") ?? "",
   user: getAuthUser(),
-  authUserRole: "",
+  authUserRole: null,
   isLoading: true,
   isAuthenticated: false,
 };
@@ -41,7 +41,13 @@ function reducer(state, action) {
     case "clearAuth": {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_user");
-      return { ...state, user: null, token: "", isAuthenticated: false };
+      return {
+        ...state,
+        user: null,
+        token: "",
+        isAuthenticated: false,
+        authUserRole: null,
+      };
     }
     default:
       return state;
@@ -55,7 +61,7 @@ function getAuthUser() {
 
 function AuthContextProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { user, token, isLoading, isAuthenticated } = state;
+  const { user, token, isLoading, isAuthenticated, authUserRole } = state;
   useEffect(() => {
     initializeAuth();
   }, []);
@@ -65,13 +71,12 @@ function AuthContextProvider({ children }) {
       const response = await loginApi(credentials);
 
       if (response.success) {
-        console.log("User data", response.data.user);
         dispatch({
           type: "setAuth",
           payload: {
             user: response.data.user,
             token: response.data.token,
-            authUserRole: response.data.roles,
+            authUserRole: response.data.roles[0],
           },
         });
 
@@ -140,7 +145,7 @@ function AuthContextProvider({ children }) {
           payload: {
             user: response.data.user,
             token: storedToken,
-            authUserRole: response.data.roles,
+            authUserRole: response.data.roles[0],
           },
         });
       } else {
@@ -171,6 +176,7 @@ function AuthContextProvider({ children }) {
         logout,
         isLoading,
         changePassword,
+        authUserRole,
       }}
     >
       {children}

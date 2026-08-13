@@ -76,6 +76,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::delete('delete/{id}', [DesignationController::class, 'destroy']);
         Route::get('/getdesignation/{id}', [DesignationController::class, 'show']);
         Route::get('/departments/{id}', [DesignationController::class, 'designationsUnderDepartment']);
+        Route::get('usersunderdesignations/{id}', [DesignationController::class, 'getUsers']);
 
     });
 
@@ -87,7 +88,8 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
     });
 
     Route::prefix('branches')->group(function () {
-        Route::get('/all', [BranchController::class, 'index']);
+        Route::get('/all', [BranchController::class, 'all']);
+        Route::get('/list', [BranchController::class, 'index']);
         Route::post('/store', [BranchController::class, 'store']);
         Route::put('/{id}/update', [BranchController::class, 'update']);
         Route::delete('delete/{id}', [BranchController::class, 'destroy']);
@@ -102,6 +104,7 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::delete('delete/{id}', [ShiftApiController::class, 'destroy']);
         Route::get('/{id}', [ShiftApiController::class, 'show']);
     });
+
 
 
 

@@ -23,7 +23,7 @@ export default function MainLayout() {
             isCollapsed ? "md:ml-16" : "md:ml-64"
           }`}
         >
-          <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-10">
+          <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-10 bg-slate-50 ">
             <Outlet />
           </div>
         </main>

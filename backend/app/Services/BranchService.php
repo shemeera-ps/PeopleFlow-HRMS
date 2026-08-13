@@ -8,7 +8,7 @@ use App\Http\Resources\BranchResource;
 
 class BranchService
 {
-    public function all($request)
+    public function index($request)
     {
         $perPage = $request->per_page ?? 10;
         $sortBy = $request->sort_by ?? "name";
@@ -25,6 +25,11 @@ class BranchService
             })
             ->orderBy($sortBy, $sortOrder)
             ->paginate($perPage);
+        return ApiResponse::success(Messages::LISTED, $data);
+    }
+    public function all()
+    {
+        $data = Branch::where('is_active', true)->get();
         return ApiResponse::success(Messages::LISTED, $data);
     }
 

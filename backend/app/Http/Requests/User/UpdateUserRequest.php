@@ -27,16 +27,10 @@ class UpdateUserRequest extends FormRequest
             "email" => "required|unique:users,email," . $this->route('id') . "|string|email",
             "name" => "required|string|max:255",
             'employee_code' => 'required|string|unique:users,employee_code,' . $this->route('id'),
-            "password" => [
-                "required",
-                "string",
-                Password::min(8)
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-            ],
+
             'department_id' => 'nullable|exists:departments,id',
             'designation_id' => 'nullable|exists:designations,id',
+            'branch_id' => 'nullable|exists:branches,id',
         ];
     }
 }

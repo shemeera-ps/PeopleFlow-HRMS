@@ -3,11 +3,8 @@ import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import SuccessDialog from "../../../components/common/SuccessDialog";
-const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-function validatePassword(value) {
-  return passwordRegex.test(value);
-}
+import { validatePassword } from "../../../utils/ValidatePassword";
+
 export default function ChangePassword() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);

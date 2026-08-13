@@ -63,11 +63,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function getRoles()
     {
-        return $this->roles()->pluck('name');
+        return $this->roles()->get();
     }
+
     public function getPermissions()
     {
-        return $this->roles()->with('permissions')->get()->pluck('permissions')->flatten()->pluck('name')->unique();
+        return $this->roles()->with('permissions')->get();
     }
     public function department()
     {

@@ -5,6 +5,7 @@ use App\Constants\Messages;
 use App\Helpers\ApiResponse;
 use App\Http\Resources\DesignationResource;
 use App\Models\Designation;
+use App\Models\User;
 
 class DesignationService
 {
@@ -59,7 +60,15 @@ class DesignationService
     }
     public function getDesignationsByDepartment($departmentId)
     {
-        $designations = Designation::where('department_id', $departmentId)->where('is_active', true)->get();
+        $designations = Designation::where('department_id', $departmentId)
+            ->where('is_active', true)
+            ->withCount('user')
+            ->get();
         return ApiResponse::success(Messages::LISTED, $designations);
+    }
+    public function getUsers($designationId)
+    {
+        $users = User::where('$designationId', $designationId)->paginate(10);
+        return ApiResponse::success(Messages::LISTED, $users);
     }
 }

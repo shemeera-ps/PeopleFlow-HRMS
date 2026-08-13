@@ -10,7 +10,7 @@ class ShiftService
 {
     public function all()
     {
-        $data = Shift::where('is_active', true)->get();
+        $data = Shift::where('is_active', true)->paginate(20);
         return ApiResponse::success(Messages::LISTED, $data);
     }
 
