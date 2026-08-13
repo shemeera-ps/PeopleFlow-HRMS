@@ -70,7 +70,16 @@ class UserService
     }
     public function getUserById($id)
     {
-        $user = User::with('roles', 'roles.permissions', 'department', 'designation', 'employmentType')->find($id);
+        $user = User::with(
+            'roles',
+            'roles.permissions',
+            'department',
+            'designation',
+            'employmentType',
+            'branch',
+            'manager',
+            'shift'
+        )->find($id);
         if (!$user) {
             return ApiResponse::error(Messages::NOT_FOUND, null, 404);
         }
@@ -139,6 +148,28 @@ class UserService
         return ApiResponse::success(
             "User employee profile updated successfully.",
             new EmployeeProfileResource($profile->load('user'))
+        );
+    }
+    public function getManagers($request)
+    {
+
+        $query = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['Manager', 'HR Manager', 'Team Lead', 'Super Administrator']);
+        })
+            ->select('id', 'name', 'employee_code')
+            ->orderBy('name');
+        if ($request->filled('target_user_id')) {
+            $query->where('id', '!=', '$request->target_user_id');
+        }
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->department_id);
+        }
+
+        $managers = $query->get();
+
+        return ApiResponse::success(
+            'Managers retrieved successfully.',
+            $managers
         );
     }
 }

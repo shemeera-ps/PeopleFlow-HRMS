@@ -8,7 +8,7 @@ export const login = async (credentials) => {
         console.log("This is error",error?.response);
         const serverMessage = error?.response?.data?.message
             || error?.response?.data?.error
-            || 'Invalid username or password';
+            || 'An error occured, Please try again later';
     
 
         return {

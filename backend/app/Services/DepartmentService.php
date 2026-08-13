@@ -60,4 +60,6 @@ class DepartmentService
         return ApiResponse::success('Department fetched successfully', new DepartmentResource($department));
     }
 
+
+
 }

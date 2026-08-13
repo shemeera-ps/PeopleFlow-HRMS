@@ -74,3 +74,13 @@ export const updateUser = async (payload, userId) => {
         };
     }
 };
+
+export const getManagers = async (params)=>{
+    try{
+        const response = await api.get("/users/managers",{params:params});
+        return response.data;
+    }catch(error){
+        console.log("Error fetching managers",error);
+        return {success:false,data:[]};
+    }
+}

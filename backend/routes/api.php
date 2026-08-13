@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AttendenceController;
 use App\Http\Controllers\Api\ShiftApiController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,8 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::put('/{id}/organization', [UserController::class, 'updateOrganizationDetails']);
 
         Route::put("/{id}/profile", [UserController::class, 'updateProfile']);
+        Route::get("managers", [UserController::class, 'managers']);
+
     });
 
     Route::prefix('departments')->group(function () {
@@ -104,6 +107,8 @@ Route::middleware('auth:api')->prefix('v1')->group(function () {
         Route::delete('delete/{id}', [ShiftApiController::class, 'destroy']);
         Route::get('/{id}', [ShiftApiController::class, 'show']);
     });
+
+    Route::apiResource('attendences', AttendenceController::class);
 
 
 

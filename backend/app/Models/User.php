@@ -104,4 +104,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(RefreshToken::class);
     }
 
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class);
+    }
+
 }

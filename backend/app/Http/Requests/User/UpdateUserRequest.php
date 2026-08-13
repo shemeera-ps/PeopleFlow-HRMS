@@ -31,6 +31,8 @@ class UpdateUserRequest extends FormRequest
             'department_id' => 'nullable|exists:departments,id',
             'designation_id' => 'nullable|exists:designations,id',
             'branch_id' => 'nullable|exists:branches,id',
+            'shift_id' => 'nullable|exists:shifts,id',
+            'manager_id' => 'nullable|exists:users,id',
         ];
     }
 }

@@ -18,6 +18,7 @@ class DesignationController extends Controller
     }
     public function store(StoreDesignationRequest $request)
     {
+
         return $this->designationService->create($request->validated());
     }
     public function update(UpdateDesignationRequest $request, $id)

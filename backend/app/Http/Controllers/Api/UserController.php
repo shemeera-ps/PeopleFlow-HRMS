@@ -63,4 +63,8 @@ class UserController extends Controller
     {
         return $this->userService->updateEmployeeProfile($request->validated(), $id);
     }
+    public function managers(Request $request)
+    {
+        return $this->userService->getManagers($request);
+    }
 }

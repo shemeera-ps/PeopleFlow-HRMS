@@ -1,10 +1,15 @@
 import { useEffect, useEffectEvent, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { getUser, updateUser } from "../../employees/api/employeeApi";
+import {
+  getManagers,
+  getUser,
+  updateUser,
+} from "../../employees/api/employeeApi";
 import { toast } from "react-toastify";
 import { allDepartments } from "../../departments/api/departmentApi";
 import { designationUnderDepartment } from "../../designations/api/designationApi";
 import { listAllBranches } from "../../branches/api/branchApi";
+import { allShifts } from "../../shifts/api/shiftApi";
 
 export function Edit() {
   const [name, setName] = useState("");
@@ -22,6 +27,12 @@ export function Edit() {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
 
+  const [shifts, setShifts] = useState([]);
+  const [selectedShift, setSelectedShift] = useState(null);
+
+  const [managers, setManagers] = useState([]);
+  const [selectedManager, setSelectedManager] = useState(null);
+
   const navigate = useNavigate();
 
   const { id } = useParams("id");
@@ -36,6 +47,9 @@ export function Edit() {
         setEmployeeCode(data.employee_code);
         setSelectedDepartment(data.department_id);
         setSelectedDesignation(data.designation_id);
+        setSelectedBranch(data.branch_id);
+        setSelectedShift(data.shift_id);
+        setSelectedManager(data.manager_id);
       }
     } catch {
     } finally {
@@ -62,6 +76,8 @@ export function Edit() {
         department_id: selectedDepartment,
         designation_id: selectedDesignation,
         branch_id: selectedBranch,
+        shift_id: selectedShift,
+        manager_id: selectedManager,
       };
       const response = await updateUser(payload, id);
       if (response.success) {
@@ -108,6 +124,24 @@ export function Edit() {
   }
   useEffect(() => {
     loadBranches();
+  }, []);
+  async function loadShifts() {
+    const response = await allShifts();
+    if (response.success) {
+      setShifts(response.data.data);
+    }
+  }
+  useEffect(() => {
+    loadShifts();
+  }, []);
+  async function loadManagers() {
+    const response = await getManagers({ target_user_id: id });
+    if (response.success) {
+      setManagers(response.data);
+    }
+  }
+  useEffect(() => {
+    loadManagers();
   }, []);
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
@@ -281,6 +315,62 @@ export function Edit() {
                       return (
                         <option value={br.id} key={br.id}>
                           {br.name}
+                        </option>
+                      );
+                    })}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="branch"
+                className="block text-sm font-medium text-slate-700 mb-1.5"
+              >
+                Shift
+              </label>
+              <div>
+                <select
+                  id="shift"
+                  className="w-full rounded-lg border bg-slate-50 px-3.5 py-2.5 pr-10 text-sm text-slate-800 placeholder-slate-400 outline-none transition-colors focus:border-slate-500 focus:bg-white focus:ring-2 focus:ring-slate-200
+                  bg-slate-300"
+                  name="shift"
+                  value={selectedShift}
+                  onChange={(e) => setSelectedShift(e.target.value)}
+                >
+                  <option value=""></option>
+                  {shifts?.length > 0 &&
+                    shifts.map((sh) => {
+                      return (
+                        <option value={sh.id} key={sh.id}>
+                          {sh.name}
+                        </option>
+                      );
+                    })}
+                </select>
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="branch"
+                className="block text-sm font-medium text-slate-700 mb-1.5"
+              >
+                Managers
+              </label>
+              <div>
+                <select
+                  id="manager"
+                  className="w-full rounded-lg border bg-slate-50 px-3.5 py-2.5 pr-10 text-sm text-slate-800 placeholder-slate-400 outline-none transition-colors focus:border-slate-500 focus:bg-white focus:ring-2 focus:ring-slate-200
+                  bg-slate-300"
+                  name="manager"
+                  value={selectedManager}
+                  onChange={(e) => setSelectedManager(e.target.value)}
+                >
+                  <option value=""></option>
+                  {managers?.length > 0 &&
+                    managers.map((mn) => {
+                      return (
+                        <option value={mn.id} key={mn.id}>
+                          {mn.name}
                         </option>
                       );
                     })}

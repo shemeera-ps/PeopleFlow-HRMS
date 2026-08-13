@@ -83,13 +83,31 @@ export function List() {
   }
   const columns = [
     { key: "name", label: "Name", sortable: true },
-    { key: "address", label: "Address" },
-    { key: "city", label: "City" },
     {
-      key: "state",
-      label: "State",
+      key: "start_time",
+      label: "Start Time",
+      sortable: true,
     },
-    { key: "country", label: "Country" },
+    {
+      key: "end_time",
+      label: "End Time",
+      sortable: true,
+    },
+    {
+      key: "break_duration",
+      label: "Break Duration (Minutes)",
+      sortable: true,
+    },
+    {
+      key: "grace_period",
+      label: "Grace Period (Minutes)",
+      sortable: true,
+    },
+    {
+      key: "description",
+      label: "Description",
+      sortable: true,
+    },
     {
       key: "action",
       label: "Action",

@@ -15,40 +15,50 @@ export function Create() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // 1. Validate fields early BEFORE mutating loading state
+    if (
+      !name?.trim() ||
+      !code?.trim() ||
+      !startTime?.trim() ||
+      !endTime?.trim() ||
+      !breakDuration?.trim() ||
+      !gracePeriod?.trim() ||
+      !description?.trim()
+    ) {
+      toast.error("Please fill all the fields");
+      return; // Safely exit here; loading hasn't started yet
+    }
+
     setIsSubmitting(true);
+
     try {
-      if (
-        !trim(name) ||
-        !trim(code) ||
-        !trim(startTime) ||
-        !trim(endTime) ||
-        !trim(breakDuration) ||
-        !trim(gracePeriod) ||
-        !trim(description)
-      ) {
-        toast.error("Please fill all the fields");
-        return;
-      }
       const payload = {
-        name,
-        code,
-        start_time: startTime,
-        end_time: endTime,
-        break_duration: breakDuration,
-        grace_period: gracePeriod,
-        description,
+        name: name.trim(),
+        code: code.trim(),
+        start_time: startTime.trim(),
+        end_time: endTime.trim(),
+        break_duration: breakDuration.trim(),
+        grace_period: gracePeriod.trim(),
+        description: description.trim(),
       };
+
       const response = await createShift(payload);
-      if (response.success) {
-        toast.success(response.message);
+
+      if (response?.success) {
+        toast.success(response.message || "Shift created successfully!");
+        // Optional: Reset form states here if required
       } else {
-        toast.error(response.message);
+        toast.error(response?.message || "Failed to create shift");
       }
-    } catch {
+    } catch (error) {
+      console.error("Shift Creation Error:", error);
+      toast.error("A network error occurred. Please try again.");
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Guarantees button unlocks on success, failure, or network crash
     }
   }
+
   return (
     <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-8">
       <div className="max-w-7xl mx-auto space-y-8">
